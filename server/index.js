@@ -5,6 +5,7 @@ import connectDB from "./config/db.js"
 
 import languageRoutes from "./routes/languageRoutes.js"
 import authorRoutes from "./routes/authorRoutes.js"
+import genreRoutes from "./routes/genreRoutes.js"
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js"
 
 // To be able to use env variables
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/languages", languageRoutes)
 app.use("/api/authors", authorRoutes)
+app.use("/api/genres", genreRoutes)
 
 // Error Middleware (page not found - errors)
 app.use(notFound)
