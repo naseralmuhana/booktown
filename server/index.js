@@ -15,7 +15,7 @@ connectDB()
 const app = express()
 
 app.get("/", (req, res) => {
-  res.send("API IS RUNNING....")
+  res.send("API IS Still RUNNING....")
 })
 
 // Accept json data
