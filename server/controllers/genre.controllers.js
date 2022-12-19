@@ -9,9 +9,22 @@ export const getGenres = asyncHandler(async (req, res) => {
   res.json(genres)
 })
 
+// @desc    Fetch a single genre by id
+// @route   GET /api/genres/:id
+// @access  Public
+export const getGenreById = asyncHandler(async (req, res) => {
+  const genre = await Genre.findById(req.params.id)
+  if (genre) {
+    res.json(genre)
+  } else {
+    res.status(404)
+    throw new Error("Genre not found")
+  }
+})
+
 // @desc    Create a single genre
 // @route   POST /api/genres
-// @access  Private/Admin (Public for now)
+// @access  Private/Admin
 export const createGenre = asyncHandler(async (req, res) => {
   const { name, image, description } = req.body
   const genreExists = await Genre.findOne({ name })
@@ -32,7 +45,7 @@ export const createGenre = asyncHandler(async (req, res) => {
 
 // @desc    Delete all genres
 // @route   DELETE /api/genres
-// @access  Private/Admin (Public for now)
+// @access  Private/Admin
 export const deleteGenres = asyncHandler(async (req, res) => {
   await Genre.deleteMany({})
   res.json({ message: "All genres removed successfully" })
@@ -40,7 +53,7 @@ export const deleteGenres = asyncHandler(async (req, res) => {
 
 // @desc    Delete a single genre
 // @route   DELETE /api/genres/:id
-// @access  Private/Admin (Public for now)
+// @access  Private/Admin
 export const deleteGenreById = asyncHandler(async (req, res) => {
   const genre = await Genre.findById(req.params.id)
   if (genre) {

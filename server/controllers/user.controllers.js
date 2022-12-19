@@ -2,14 +2,6 @@ import asyncHandler from "express-async-handler"
 import { User } from "../models/index.js"
 import { generateToken } from "../utils/index.js"
 
-// @desc    Get all users
-// @route   GET /api/users
-// @access  Private/Admin (Public for now)
-export const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find()
-  res.json(users)
-})
-
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
@@ -65,9 +57,70 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 })
 
+// @desc    Get all users
+// @route   GET /api/users
+// @access  Private/Admin
+export const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
+})
+
+// @desc    GET a single user by id
+// @route   GET /api/users/:id
+// @access  Private/Admin
+export const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      slug: user.slug,
+    })
+  } else {
+    res.status(404)
+    throw new Error(`User ${req.params.id} not found`)
+  }
+})
+
+// @desc    Get user profile
+// @route   GET /api/users/profile
+// @access  Private/Admin
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      slug: user.slug,
+    })
+  } else {
+    res.status(404)
+    throw new Error("User not found")
+  }
+})
+
+// @desc    Delete a single user
+// @route   DELETE /api/users/:id
+// @access  Private/Admin
+export const deleteUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+  if (user) {
+    await user.remove()
+    res.json({ message: "User Removed" })
+  } else {
+    res.status(404)
+    throw new Error(`User ${req.params.id} not found`)
+  }
+})
+
 // @desc    Delete all users
 // @route   DELETE /api/users
-// @access  Private/Admin (Public for now)
+// @access  Private/Admin
 export const deleteUsers = asyncHandler(async (req, res) => {
   await User.deleteMany({})
   res.json({ message: "User Removed" })
