@@ -1,5 +1,6 @@
 import express from "express"
 import {
+  authUser,
   deleteUsers,
   getUsers,
   registerUser,
@@ -8,5 +9,6 @@ import {
 const router = express.Router()
 
 router.route("/").get(getUsers).post(registerUser).delete(deleteUsers)
+router.route("/login").post(authUser)
 
 export default router
