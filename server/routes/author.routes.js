@@ -4,7 +4,7 @@ import {
   deleteAuthorById,
   deleteAuthors,
   getAuthors,
-} from "../controllers/authorControllers.js"
+} from "../controllers/author.controllers.js"
 
 const router = express.Router()
 

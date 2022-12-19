@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import Author from "../models/authorModel.js"
+import { Author } from "../models/index.js"
 
 // @desc    Fetch all authors
 // @route   GET /api/authors

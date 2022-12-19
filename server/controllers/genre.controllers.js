@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import Genre from "../models/genreModel.js"
+import { Genre } from "../models/index.js"
 
 // @desc    Fetch all genres
 // @route   GET /api/genres

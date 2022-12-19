@@ -4,7 +4,7 @@ import {
   createLanguage,
   deleteLanguageById,
   deleteLanguages,
-} from "../controllers/languageControllers.js"
+} from "../controllers/language.controllers.js"
 
 const router = express.Router()
 

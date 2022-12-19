@@ -1,12 +1,10 @@
 import express from "express"
 import dotenv from "dotenv"
 import colors from "colors"
-import connectDB from "./config/db.js"
+import connectDB from "./config/db.config.js"
 
-import languageRoutes from "./routes/languageRoutes.js"
-import authorRoutes from "./routes/authorRoutes.js"
-import genreRoutes from "./routes/genreRoutes.js"
-import { errorHandler, notFound } from "./middleware/errorMiddleware.js"
+import { errorHandler, notFound } from "./middleware/error.middleware.js"
+import routes from "./routes/index.js"
 
 // To be able to use env variables
 dotenv.config()
@@ -16,17 +14,15 @@ connectDB()
 
 const app = express()
 
-// allow us to accept json data (like: body from POST request)
-app.use(express.json())
-
 app.get("/", (req, res) => {
   res.send("API IS RUNNING....")
 })
 
-// Routes
-app.use("/api/languages", languageRoutes)
-app.use("/api/authors", authorRoutes)
-app.use("/api/genres", genreRoutes)
+// Accept json data
+app.use(express.json())
+
+// registering routes
+app.use(routes)
 
 // Error Middleware (page not found - errors)
 app.use(notFound)

@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import Language from "../models/languageModel.js"
+import { Language } from "../models/index.js"
 
 // @desc    Fetch all languages
 // @route   GET /api/languages

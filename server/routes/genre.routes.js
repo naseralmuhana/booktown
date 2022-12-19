@@ -4,7 +4,7 @@ import {
   deleteGenreById,
   deleteGenres,
   getGenres,
-} from "../controllers/genreControllers.js"
+} from "../controllers/genre.controllers.js"
 
 const router = express.Router()
 
