@@ -5,6 +5,7 @@ import connectDB from "./config/db.js"
 
 import languageRoutes from "./routes/languageRoutes.js"
 import authorRoutes from "./routes/authorRoutes.js"
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js"
 
 // To be able to use env variables
 dotenv.config()
@@ -25,6 +26,11 @@ app.get("/", (req, res) => {
 app.use("/api/languages", languageRoutes)
 app.use("/api/authors", authorRoutes)
 
+// Error Middleware (page not found - errors)
+app.use(notFound)
+app.use(errorHandler)
+
+// App Listen
 const PORT = process.env.PORT || 5000
 const MODE = process.env.NODE_ENV || "development"
 app.listen(
