@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import slug from "mongoose-slug-generator"
 
-mongoose.plugin(slug)
+mongoose.plugin(slug, { separator: "-" })
 
 const authorSchema = mongoose.Schema(
   {
