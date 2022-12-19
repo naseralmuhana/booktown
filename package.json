@@ -1,0 +1,36 @@
+{
+  "name": "booktown",
+  "version": "1.0.0",
+  "description": "books store",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index",
+    "server": "nodemon server/index",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import": "node server/seeder",
+    "data:destroy": "node server/seeder -d"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naseralmuhana/react-booktown.git"
+  },
+  "author": "Naser ALMuhana",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naseralmuhana/react-booktown/issues"
+  },
+  "homepage": "https://github.com/naseralmuhana/react-booktown#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^6.8.0"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
+  }
+}
