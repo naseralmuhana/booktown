@@ -1,0 +1,53 @@
+import asyncHandler from "express-async-handler"
+import Author from "../models/authorModel.js"
+
+// @desc    Fetch all authors
+// @route   GET /api/authors
+// @access  Public
+export const getAuthors = asyncHandler(async (req, res) => {
+  const authors = await Author.find({})
+  res.json(authors)
+})
+
+// @desc    Create a single author
+// @route   POST /api/authors
+// @access  Private/Admin (Public for now)
+export const createAuthor = asyncHandler(async (req, res) => {
+  const { name, image, description } = req.body
+  const authorExists = await Author.findOne({ name })
+
+  if (authorExists) {
+    res.status(400)
+    throw new Error(`${name} author already exists`)
+  }
+  const author = await Author.create({ name, image, description })
+
+  if (author) {
+    res.status(201).json(author)
+  } else {
+    res.status(400)
+    throw new Error("Invalid author data")
+  }
+})
+
+// @desc    Delete all authors
+// @route   DELETE /api/authors
+// @access  Private/Admin (Public for now)
+export const deleteAuthors = asyncHandler(async (req, res) => {
+  await Author.deleteMany({})
+  res.json({ message: "All authors removed successfully" })
+})
+
+// @desc    Delete a single author
+// @route   DELETE /api/authors/:id
+// @access  Private/Admin (Public for now)
+export const deleteAuthorById = asyncHandler(async (req, res) => {
+  const author = await Author.findById(req.params.id)
+  if (author) {
+    await author.remove()
+    res.json({ message: "Author removed successfully" })
+  } else {
+    res.status(404)
+    throw new Error("Author not found")
+  }
+})
