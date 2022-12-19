@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import colors from "colors"
+import morgan from "morgan"
 import connectDB from "./config/db.config.js"
 
 import { errorHandler, notFound } from "./middleware/error.middleware.js"
@@ -17,6 +18,10 @@ const app = express()
 app.get("/", (req, res) => {
   res.send("API IS Still RUNNING....")
 })
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"))
+}
 
 // Accept json data
 app.use(express.json())
