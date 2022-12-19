@@ -30,7 +30,8 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.8.0",
-    "mongoose-slug-generator": "^1.0.4"
+    "mongoose-slug-generator": "^1.0.4",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
