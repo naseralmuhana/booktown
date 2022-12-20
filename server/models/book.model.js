@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import slug from "mongoose-slug-generator"
+import { reviewSchema } from "./review.model.js"
 
 mongoose.plugin(slug)
 
@@ -12,11 +13,12 @@ const bookSchema = mongoose.Schema(
     },
     name: { type: String, required: true },
     image: { type: String }, // set required:true
-    description: { type: String, required: true },
+    description: { type: String }, // set required:true
+    reviews: [reviewSchema],
     rating: { type: Number, required: true, default: 0 },
     price: { type: Number, required: true, default: 0 },
     countInStock: { type: Number, required: true, default: 0 },
-    slug: { type: String, slug: "name", unique: true },
+    slug: { type: String, slug: "name" },
   },
   { timestamps: true }
 )
