@@ -1,6 +1,23 @@
 import asyncHandler from "express-async-handler"
 import { Language } from "../models/index.js"
 
+const validateHandler = (err, req, res) => {
+  let errors = {}
+  // Duplicate error code
+  if (err.code === 11000) {
+    errors.name = "This language is already exists"
+    return errors
+  }
+  // Validation errors
+
+  if (err.message.includes("Language validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message
+    })
+  }
+  return errors
+}
+
 // @desc    Fetch all languages
 // @route   GET /api/languages
 // @access  Public
@@ -27,19 +44,11 @@ export const getLanguageById = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 export const createLanguage = asyncHandler(async (req, res) => {
   const { name } = req.body
-  const languageExists = await Language.findOne({ name })
-
-  if (languageExists) {
-    res.status(400)
-    throw new Error(`${name} language already exists`)
-  }
-  const language = await Language.create({ name })
-
-  if (language) {
+  try {
+    const language = await Language.create({ name })
     res.status(201).json(language)
-  } else {
-    res.status(400)
-    throw new Error("Invalid language data")
+  } catch (err) {
+    res.status(400).json(validateHandler(err))
   }
 })
 
@@ -50,16 +59,17 @@ export const updateLanguageById = asyncHandler(async (req, res) => {
   const language = await Language.findById(req.params.id)
 
   if (language) {
-    if (!req.body.name) {
-      res.json("nothing changed")
+    try {
+      language.name = req.body.name
+      const updatedLanguage = await language.save()
+      res.json({
+        _id: updatedLanguage._id,
+        name: updatedLanguage.name,
+        slug: updatedLanguage.slug,
+      })
+    } catch (err) {
+      res.status(400).json(validateHandler(err))
     }
-    language.name = req.body.name || language.name
-    const updatedLanguage = await language.save()
-    res.json({
-      _id: updatedLanguage._id,
-      name: updatedLanguage.name,
-      slug: updatedLanguage.slug,
-    })
   } else {
     res.status(404)
     throw new Error("Language not found")

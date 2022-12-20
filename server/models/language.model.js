@@ -5,7 +5,11 @@ mongoose.plugin(slug)
 
 const languageSchema = mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true },
+    name: {
+      type: String,
+      required: [true, "Please enter a language"],
+      unique: true,
+    },
     slug: { type: String, slug: "name" },
   },
   { timestamps: true }
