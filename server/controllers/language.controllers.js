@@ -43,6 +43,29 @@ export const createLanguage = asyncHandler(async (req, res) => {
   }
 })
 
+// @desc    Update a single language
+// @route   PUT /api/languages/:id
+// @access  Private/Admin
+export const updateLanguageById = asyncHandler(async (req, res) => {
+  const language = await Language.findById(req.params.id)
+
+  if (language) {
+    if (!req.body.name) {
+      res.json("nothing changed")
+    }
+    language.name = req.body.name || language.name
+    const updatedLanguage = await language.save()
+    res.json({
+      _id: updatedLanguage._id,
+      name: updatedLanguage.name,
+      slug: updatedLanguage.slug,
+    })
+  } else {
+    res.status(404)
+    throw new Error("Language not found")
+  }
+})
+
 // @desc    Delete all languages
 // @route   DELETE /api/languages
 // @access  Private/Admin
