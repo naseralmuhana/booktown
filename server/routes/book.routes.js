@@ -1,6 +1,7 @@
 import express from "express"
 import {
   createBook,
+  createBookReview,
   deleteBookById,
   deleteBooks,
   getBookById,
@@ -17,5 +18,6 @@ router
   .delete(protect, admin, deleteBooks)
 
 router.route("/:id").get(getBookById).delete(protect, admin, deleteBookById)
+router.route("/:id/reviews").post(protect, createBookReview)
 
 export default router

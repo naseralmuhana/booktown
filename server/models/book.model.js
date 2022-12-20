@@ -15,13 +15,23 @@ const bookSchema = mongoose.Schema(
     image: { type: String }, // set required:true
     description: { type: String }, // set required:true
     reviews: [reviewSchema],
-    rating: { type: Number, required: true, default: 0 },
+    numReviews: { type: Number, required: true, default: 0 },
+    rating: { type: Number, required: true, default: 0 }, // add min & max
     price: { type: Number, required: true, default: 0 },
     countInStock: { type: Number, required: true, default: 0 },
     slug: { type: String, slug: "name" },
   },
   { timestamps: true }
 )
+
+bookSchema.pre("save", function (next) {
+  if (!this.isModified("rating")) {
+    next()
+  }
+  const updatedRating = this.rating.toFixed(2)
+  this.rating = parseFloat(updatedRating)
+  next()
+})
 
 const Book = mongoose.model("Book", bookSchema)
 
@@ -38,11 +48,3 @@ export default Book
 // favourite = models.ManyToManyField(
 //     User, related_name='favourite', blank=True)
 // active = models.BooleanField(default=True)
-
-// {
-//     reviews: [reviewSchema],
-//     numReviews: { type: Number, required: true, default: 0 },
-//     price: { type: Number, required: true, default: 0 },
-//     countInStock: { type: Number, required: true, default: 0 },
-//   },
-//   { timestamps: true }

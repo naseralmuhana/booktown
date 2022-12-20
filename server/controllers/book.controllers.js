@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import { Book } from "../models/index.js"
+import { Book, Language } from "../models/index.js"
 
 // @desc    Fetch all books
 // @route   GET /api/books
@@ -27,6 +27,7 @@ export const getBookById = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 export const createBook = asyncHandler(async (req, res) => {
   const { name, image, description, rating, price, countInStock } = req.body
+
   const bookExists = await Book.findOne({ name })
 
   if (bookExists) {
@@ -49,6 +50,40 @@ export const createBook = asyncHandler(async (req, res) => {
   } else {
     res.status(400)
     throw new Error("Invalid book data")
+  }
+})
+// @desc    Create a single review
+// @route   POST /api/books/:id/reviews
+// @access  Private
+export const createBookReview = asyncHandler(async (req, res) => {
+  const { rating, comment } = req.body
+  const book = await Book.findById(req.params.id)
+
+  if (book) {
+    const alreadyReviewed = book.reviews.find(
+      (review) => review.user.toString() === req.user._id.toString()
+    )
+    if (alreadyReviewed) {
+      res.status(400)
+      throw new Error(`Book already reviewed`)
+    }
+    const review = {
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+      user: req.user._id,
+    }
+    book.reviews.push(review)
+    book.numReviews = book.reviews.length
+    book.rating =
+      book.reviews.reduce((acc, review) => review.rating + acc, 0) /
+      book.reviews.length
+
+    await book.save()
+    res.status(201).json({ message: "Review Added" })
+  } else {
+    res.status(404)
+    throw new Error("Book not found")
   }
 })
 
