@@ -5,6 +5,7 @@ import {
   deleteLanguageById,
   deleteLanguages,
   getLanguageById,
+  updateLanguageById,
 } from "../controllers/language.controllers.js"
 import { admin, protect } from "../middleware/auth.middleware.js"
 
@@ -18,6 +19,7 @@ router
 router
   .route("/:id")
   .get(getLanguageById)
+  .put(protect, admin, updateLanguageById)
   .delete(protect, admin, deleteLanguageById)
 
 export default router
