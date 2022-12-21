@@ -3,7 +3,8 @@ import GlobalStyle from "./GlobalStyle"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Header } from "./components"
 import { Route, Routes } from "react-router-dom"
-import { Home, Login } from "./pages"
+import { Home, Login, Profile } from "./pages"
+import { ProtectedRoute } from "./utils"
 
 const App = () => {
   return (
@@ -12,8 +13,11 @@ const App = () => {
       <Header />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route index element={<Home />} />
+          <Route path="login" element={<Login />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="profile" element={<Profile />} />
+          </Route>
         </Routes>
       </main>
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />

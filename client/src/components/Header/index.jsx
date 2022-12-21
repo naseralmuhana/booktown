@@ -1,17 +1,33 @@
 import React from "react"
 import { NavLink } from "react-router-dom"
 import styled from "styled-components"
+import { useAuth } from "../../context"
 
 const Header = () => {
+  const { token, logout } = useAuth()
+
   return (
     <Wrapper>
       <List>
-        <li>
-          <NavLink to="/">Home</NavLink>
-        </li>
-        <li>
-          <NavLink to="/login">Login</NavLink>
-        </li>
+        <div className="left">
+          <li>
+            <NavLink to="/">Home</NavLink>
+          </li>
+          {token ? (
+            <li>
+              <NavLink to="/profile">Profile</NavLink>
+            </li>
+          ) : (
+            <li>
+              <NavLink to="/login">Login</NavLink>
+            </li>
+          )}
+        </div>
+        {token ? (
+          <li>
+            <p onClick={logout}>Logout</p>
+          </li>
+        ) : null}
       </List>
     </Wrapper>
   )
@@ -34,19 +50,28 @@ const List = styled.ul`
 
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+
+  .left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   li {
     padding-right: 1rem;
     &:last-child {
       padding-right: 0;
     }
-    a {
+    a,
+    p {
+      cursor: pointer;
       transition: all 250ms linear;
       &:hover {
-        color: #c330e0;
+        color: rgb(216, 74, 245);
       }
       &.active {
-        color: #ea91fa;
+        color: rgb(216, 74, 245, 0.7);
       }
     }
   }

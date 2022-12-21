@@ -8,7 +8,6 @@ const GlobalStyle = createGlobalStyle`
 }
 body{
     background-color:#303030;
-    color:#f9f9f9;
 }
 main{
     width:80%;
@@ -16,10 +15,12 @@ main{
 }
 a{
     text-decoration: none;
-    color: #f9f9f9;
 }
 ul{
     list-style: none;
+}
+body, a, button, input{
+    color:#f9f9f9;
 }
   
 `
