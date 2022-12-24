@@ -26,10 +26,15 @@ a:hover {
 
 body {
   margin: 0;
+  height: 100vh;
+}
+.app {
+  height: 100vh;
+  margin: auto;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
@@ -67,4 +72,23 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+input {
+  font: inherit;
+  margin: 0 0.5rem 0.5rem 0;
+  padding: 0.4rem;
+}
+
+ul {
+  width: 60%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  word-break: break-all;
+}
+
+img {
+  display: block;
+  width: 15%;
 }
