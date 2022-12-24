@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import colors from "colors"
+import path from "path"
 import morgan from "morgan"
 import connectDB from "./config/db.config.js"
 
@@ -23,11 +24,15 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
 }
 
-// Accept json data
+// for parsing application/json
 app.use(express.json())
 
 // registering routes
 app.use(routes)
+
+// Make uploads folder static to get the ability to access it
+const __dirname = path.resolve()
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")))
 
 // Error Middleware (page not found - errors)
 app.use(notFound)
