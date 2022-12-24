@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import { validateHandler } from "../middleware/validate.middleware.js"
+import validateHandler from "../middleware/validate.middleware.js"
 import { Language } from "../models/index.js"
 
 // @desc    Fetch all languages

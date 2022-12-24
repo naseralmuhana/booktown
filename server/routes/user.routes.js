@@ -2,8 +2,9 @@ import express from "express"
 import {
   authUser,
   registerUser,
+  getUser,
+  updatedUser,
   getUsers,
-  getUserProfile,
   deleteUsers,
   deleteUserById,
   getUserById,
@@ -17,10 +18,8 @@ router
   .get(protect, admin, getUsers)
   .post(registerUser)
   .delete(protect, admin, deleteUsers)
-
 router.route("/login").post(authUser)
-router.route("/profile").get(protect, getUserProfile)
-
+router.route("/profile").get(protect, getUser).put(protect, updatedUser)
 router
   .route("/:id")
   .delete(protect, admin, deleteUserById)
