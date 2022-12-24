@@ -28,15 +28,13 @@ const userSchema = mongoose.Schema(
         message: "Please enter a valid email",
       },
     },
-    image: {
-      data: Buffer,
-      contentType: String,
-    },
+
     password: {
       type: String,
       required: [true, "Please enter an password"],
       minLength: [6, "Minimum password length is 6 characters"],
     },
+    image: String,
     isAdmin: {
       type: Boolean,
       required: true,
@@ -59,6 +57,10 @@ userSchema.static({
     return
   },
 })
+
+userSchema.query.defaultSelect = function () {
+  return this.select("_id name email image")
+}
 
 // Hash password pre save
 userSchema.pre(["save"], async function (next) {

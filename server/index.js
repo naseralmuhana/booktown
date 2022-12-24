@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
 }
 
-// Accept json data
+// for parsing application/json
 app.use(express.json())
 
 // registering routes

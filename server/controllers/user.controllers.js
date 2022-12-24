@@ -28,11 +28,12 @@ export const authUser = asyncHandler(async (req, res) => {
 // @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
   try {
-    const user = await User.create(req.body)
+    const user = await User.create({ ...req.body, image: req.file?.path })
     res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      image: user.image,
       isAdmin: user.isAdmin,
       slug: user.slug,
       token: generateToken(user._id),
@@ -46,15 +47,9 @@ export const registerUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private/Admin
 export const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
+  const user = await User.findById(req.user._id).defaultSelect()
   if (user) {
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      slug: user.slug,
-    })
+    res.json(user._doc)
   } else {
     res.status(404)
     throw new Error("User not found")
@@ -70,6 +65,7 @@ export const updatedUser = asyncHandler(async (req, res) => {
     try {
       user.name = req.body.name || user.name
       user.email = req.body.email || user.email
+      user.image = req.file?.path || user.image
       if (req.body.password) {
         user.password = req.body.password || user.password
       }
@@ -79,7 +75,9 @@ export const updatedUser = asyncHandler(async (req, res) => {
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
+        image: updatedUser.image,
         isAdmin: updatedUser.isAdmin,
+        slug: updatedUser.slug,
         token: generateToken(updatedUser._id),
       })
     } catch (error) {
