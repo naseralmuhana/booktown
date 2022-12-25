@@ -15,10 +15,8 @@
 //   return errors
 // }
 
-const validateHandler = (err, name) => {
+const validateHandler = (err) => {
   let errors = {}
-  // Upload image error
-
   // Validation errors
   if (err.message.includes("validation failed")) {
     Object.values(err.errors).forEach(({ properties }) => {
