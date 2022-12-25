@@ -1,7 +1,5 @@
 import mongoose from "mongoose"
-import slug from "mongoose-slug-generator"
-
-mongoose.plugin(slug)
+import validator from "validator"
 
 const languageSchema = mongoose.Schema(
   {
@@ -10,50 +8,57 @@ const languageSchema = mongoose.Schema(
       required: [true, "Please enter a language"],
       unique: true,
       trim: true,
+      validate: {
+        validator: (value) =>
+          validator.isAlphanumeric(validator.blacklist(value, " -.")),
+        message: "Please use only letters, numbers and periods",
+      },
     },
-    description: { type: String, trim: true }, // set required:true
-    slug: { type: String, slug: "name" },
+    image: String,
+    description: { type: String, trim: true },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
+      autopopulate: { select: "name slug" },
     },
     updatedBy: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
+      autopopulate: { select: "name slug" },
     },
+    slug: { type: String, slug: "name", unique: true },
   },
   { timestamps: true }
 )
 
-languageSchema.pre("save", function (next) {
-  // capitalize
-  this.name =
-    this.name.charAt(0).toUpperCase() + this.name.slice(1).toLowerCase()
-  next()
+// Methods
+languageSchema.method({
+  matchByName: function (name) {
+    return this.name.toLowerCase() === name.toLowerCase().trim()
+  },
+  // matchByDescription: function (description) {
+  //   return this.description.toLowerCase() === description.toLowerCase().trim()
+  // },
+  matchByImage: function (image) {
+    return this.image.toLowerCase() === image.toLowerCase().trim()
+  },
 })
 
-// static
+// Statics
 languageSchema.static({
-  // find with populate createdBy, updatedBy
-  findWithPopulate: function (params) {
-    return this.find(params)
-      .populate("createdBy", "name")
-      .populate("updatedBy", "name")
-  },
-  // find by id with populate createdBy, updatedBy
-  findByIdWithPopulate: function (id) {
-    return this.findById(id)
-      .populate("createdBy", "name")
-      .populate("updatedBy", "name")
-  },
-  // find By Name with populate createdBy, updatedBy
-  findByNameWithPopulate: function (name) {
+  findByName: function (name) {
     return this.find({ name: new RegExp(name, "i") })
-      .populate("createdBy", "name")
-      .populate("updatedBy", "name")
   },
+})
+
+// convert name felid into capitalized name
+languageSchema.pre("validate", function (next) {
+  if (this.name)
+    this.name =
+      this.name.charAt(0).toUpperCase() + this.name.slice(1).toLowerCase()
+  next()
 })
 
 const Language = mongoose.model("Language", languageSchema)
