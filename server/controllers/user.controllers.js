@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import validateHandler from "../middleware/validate.middleware.js"
-import { User } from "../models/index.js"
-import { generateToken } from "../utils/index.js"
+import User from "../models/user.model.js"
+import generateToken from "../utils/generateToken.utils.js"
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login

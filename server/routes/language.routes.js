@@ -8,19 +8,19 @@ import {
   updateLanguageById,
 } from "../controllers/language.controllers.js"
 import { admin, protect } from "../middleware/auth.middleware.js"
-import { uploadLanguagesImage } from "../utils/uploadImages.utils.js"
 
 const router = express.Router()
 
 router
   .route("/")
   .get(getLanguages)
-  .post(protect, admin, uploadLanguagesImage.single("image"), createLanguage)
-  .delete(protect, admin, deleteLanguages)
+  .post(createLanguage) // protect, admin,
+  .delete(deleteLanguages) // protect, admin,
+
 router
   .route("/:id")
   .get(getLanguageById)
-  .put(protect, admin, uploadLanguagesImage.single("image"), updateLanguageById)
-  .delete(protect, admin, deleteLanguageById)
+  .put(updateLanguageById) // protect, admin,
+  .delete(deleteLanguageById) // protect, admin,
 
 export default router

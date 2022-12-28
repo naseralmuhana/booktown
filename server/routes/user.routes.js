@@ -10,20 +10,20 @@ import {
   getUserById,
 } from "../controllers/user.controllers.js"
 import { protect, admin } from "../middleware/auth.middleware.js"
-import { uploadUsersImage } from "../utils/index.js"
+import { usersFileUpload } from "../utils/fileUpload.utils.js"
 
 const router = express.Router()
 
 router
   .route("/")
   .get(protect, admin, getUsers)
-  .post(uploadUsersImage.single("image"), registerUser)
+  .post(usersFileUpload.single("image"), registerUser)
   .delete(protect, admin, deleteUsers)
 router.route("/login").post(authUser)
 router
   .route("/profile")
   .get(protect, getUser)
-  .put(protect, uploadUsersImage.single("image"), updatedUser)
+  .put(protect, usersFileUpload.single("image"), updatedUser)
 router
   .route("/:id")
   .delete(protect, admin, deleteUserById)

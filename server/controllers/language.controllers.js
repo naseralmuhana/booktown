@@ -1,28 +1,46 @@
 import asyncHandler from "express-async-handler"
+import constants from "../constants/index.js"
 import validateHandler from "../middleware/validate.middleware.js"
-import { Language } from "../models/index.js"
+import Language from "../models/language.model.js"
 
-// @desc    Fetch all languages
+// @desc    Get all languages
 // @route   GET /api/languages
 // @access  Public
-export const getLanguages = asyncHandler(async (req, res) =>
-  res.json(await Language.find({}))
-)
+export const getLanguages = asyncHandler(async (req, res) => {
+  const languages = await Language.find({})
+  res.json(languages)
+})
+
+// @desc    Delete all languages
+// @route   DELETE /api/languages
+// @access  Private/Admin
+export const deleteLanguages = asyncHandler(async (req, res) => {
+  await Language.deleteMany({})
+  res.json(constants.jsonDeleteMessage)
+})
 
 // @desc    Create a single language
 // @route   POST /api/languages
 // @access  Private/Admin
 export const createLanguage = asyncHandler(async (req, res) => {
   try {
-    const language = await Language.create({
-      createdBy: req.user._id,
-      updatedBy: req.user._id,
-      image: req.file?.path,
-      ...req.body,
-    })
+    const language = await Language.create({ name: req.body.name })
     res.status(201).json(language)
   } catch (error) {
     res.status(400).json(validateHandler(error))
+  }
+})
+
+// @desc    Fetch a single language by id
+// @route   GET /api/languages/:id
+// @access  Public
+export const getLanguageById = asyncHandler(async (req, res) => {
+  const language = await Language.findById(req.params.id)
+  if (language) {
+    res.json(language)
+  } else {
+    res.status(404)
+    throw new Error("Language not found")
   }
 })
 
@@ -33,18 +51,11 @@ export const updateLanguageById = asyncHandler(async (req, res) => {
   const language = await Language.findById(req.params.id)
   if (language) {
     try {
-      // if (!language.matchByName(req.body?.name)) language.name = req.body.name
-      // language.description = req.body.description || language.description
-      // console.log(req.file?.path)
-      // if (!language.matchByImage(req.file?.path)) {
-
-      //   language.image = req.file?.path || language.image
-      // }
-      // language.updatedBy = req.user._id
-      // if (!language.createdBy) language.createdBy = req.user._id
-
-      // await language.save()
-      res.status(201).json(language)
+      if (!language.matchByName(req.body.name)) {
+        language.name = req.body.name
+        await language.save()
+      }
+      res.status(200).json(language)
     } catch (error) {
       res.status(400).json(validateHandler(error))
     }
@@ -52,27 +63,6 @@ export const updateLanguageById = asyncHandler(async (req, res) => {
     res.status(404)
     throw new Error("Language not found")
   }
-})
-
-// @desc    Fetch a single language by id
-// @route   GET /api/languages/:id
-// @access  Public
-export const getLanguageById = asyncHandler(async (req, res) => {
-  const language = await Language.findByIdWithPopulate(req.params.id)
-  if (language) {
-    res.json(language)
-  } else {
-    res.status(404)
-    throw new Error("Language not found")
-  }
-})
-
-// @desc    Delete all languages
-// @route   DELETE /api/languages
-// @access  Private/Admin
-export const deleteLanguages = asyncHandler(async (req, res) => {
-  await Language.deleteMany({})
-  res.json({ message: "All languages removed successfully" })
 })
 
 // @desc    Delete a single language

@@ -1,5 +1,8 @@
 import asyncHandler from "express-async-handler"
-import { Author } from "../models/index.js"
+import path from "path"
+import Author from "../models/author.model.js"
+
+const __dirname = path.resolve()
 
 // @desc    Fetch all authors
 // @route   GET /api/authors
@@ -64,3 +67,8 @@ export const deleteAuthorById = asyncHandler(async (req, res) => {
     throw new Error("Author not found")
   }
 })
+
+// image: req.file?.path,
+// if (language?.image) {
+//   removeUploadedFile(__dirname, language?.image)
+// }

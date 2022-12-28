@@ -12,6 +12,11 @@ const bookSchema = mongoose.Schema(
       ref: "User",
     },
     name: { type: String, required: true },
+    genre: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Genre",
+    },
     image: { type: String }, // set required:true
     description: { type: String }, // set required:true
     reviews: [reviewSchema],

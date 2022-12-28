@@ -1,12 +1,54 @@
 import asyncHandler from "express-async-handler"
-import { Genre } from "../models/index.js"
+import constants from "../constants/index.js"
+import validateHandler from "../middleware/validate.middleware.js"
+import Genre from "../models/genre.model.js"
+import path from "path"
+import { removeUploadedFile } from "../utils/fileUpload.utils.js"
 
-// @desc    Fetch all genres
+const __dirname = path.resolve()
+
+// @desc    Get all genres
 // @route   GET /api/genres
 // @access  Public
 export const getGenres = asyncHandler(async (req, res) => {
   const genres = await Genre.find({})
   res.json(genres)
+})
+
+// @desc    Create a single genre
+// @route   POST /api/genres
+// @access  Private/Admin
+export const createGenre = asyncHandler(async (req, res) => {
+  const genre = new Genre({
+    name: req.body.name,
+    image: req.file?.path,
+  })
+  try {
+    await genre.save()
+    res.status(201).json(genre)
+  } catch (error) {
+    console.log(error)
+    if (genre?.image) {
+      removeUploadedFile(__dirname, genre?.image)
+    }
+    res.status(400).json(validateHandler(error))
+  }
+})
+
+// @desc    Update a single genre
+// @route   PUT /api/genres/:id
+// @access  Private/Admin
+export const updateGenreById = asyncHandler(async (req, res) => {
+  try {
+    const genre = await Genre.findUpdateById({
+      id: req.params.id,
+      name: req.body?.name,
+      image: req.file?.path,
+    })
+    res.status(200).json(genre)
+  } catch (error) {
+    res.status(400).json(error)
+  }
 })
 
 // @desc    Fetch a single genre by id
@@ -22,35 +64,6 @@ export const getGenreById = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc    Create a single genre
-// @route   POST /api/genres
-// @access  Private/Admin
-export const createGenre = asyncHandler(async (req, res) => {
-  const { name, image, description } = req.body
-  const genreExists = await Genre.findOne({ name })
-
-  if (genreExists) {
-    res.status(400)
-    throw new Error(`${name} genre already exists`)
-  }
-  const genre = await Genre.create({ name, image, description })
-
-  if (genre) {
-    res.status(201).json(genre)
-  } else {
-    res.status(400)
-    throw new Error("Invalid genre data")
-  }
-})
-
-// @desc    Delete all genres
-// @route   DELETE /api/genres
-// @access  Private/Admin
-export const deleteGenres = asyncHandler(async (req, res) => {
-  await Genre.deleteMany({})
-  res.json({ message: "All genres removed successfully" })
-})
-
 // @desc    Delete a single genre
 // @route   DELETE /api/genres/:id
 // @access  Private/Admin
@@ -64,3 +77,7 @@ export const deleteGenreById = asyncHandler(async (req, res) => {
     throw new Error("Genre not found")
   }
 })
+
+// genres.forEach((genre) => {
+//   if (genre?.image) removeUploadedFile(__dirname, genre?.image)
+// })

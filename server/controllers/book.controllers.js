@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler"
-import { Book, Language } from "../models/index.js"
+import Book from "../models/book.model.js"
+import Genre from "../models/genre.model.js"
 
 // @desc    Fetch all books
 // @route   GET /api/books
@@ -26,7 +27,8 @@ export const getBookById = asyncHandler(async (req, res) => {
 // @route   POST /api/books
 // @access  Private/Admin
 export const createBook = asyncHandler(async (req, res) => {
-  const { name, image, description, rating, price, countInStock } = req.body
+  const { name, image, description, rating, price, countInStock, genre } =
+    req.body
 
   const bookExists = await Book.findOne({ name })
 
@@ -34,11 +36,12 @@ export const createBook = asyncHandler(async (req, res) => {
     res.status(400)
     throw new Error(`${name} book already exists`)
   }
-
+  const genreExists = await Genre.findOne({ name: genre })
   const book = await Book.create({
     name,
     user: req.user._id,
     image,
+    genre: genreExists._id,
     description,
     rating,
     price,

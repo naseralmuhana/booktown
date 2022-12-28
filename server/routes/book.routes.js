@@ -14,7 +14,7 @@ const router = express.Router()
 router
   .route("/")
   .get(getBooks)
-  .post(protect, admin, createBook)
+  .post(protect, createBook) //protect, admin,
   .delete(protect, admin, deleteBooks)
 
 router.route("/:id").get(getBookById).delete(protect, admin, deleteBookById)

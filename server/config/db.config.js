@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 import slug from "mongoose-slug-generator"
 import uniqueValidator from "mongoose-unique-validator"
 import mongooseAutoPopulate from "mongoose-autopopulate"
+import constants from "../constants/index.js"
 
 const connectDB = async () => {
   try {
@@ -19,7 +20,7 @@ const connectDB = async () => {
 mongoose.set("strictQuery", false)
 
 mongoose.plugin(slug, { separator: "-" })
-mongoose.plugin(uniqueValidator, { message: "{VALUE} is already exists." })
+mongoose.plugin(uniqueValidator, { message: constants.uniqueValidatorMessage })
 mongoose.plugin(mongooseAutoPopulate)
 
 export default connectDB
